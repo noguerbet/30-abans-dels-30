@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>30 Abans dels 30</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,700;0,900;1,700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { font-family: 'Plus Jakarta Sans', sans-serif; background: #F7F4EF; color: #1A1A2E; overflow-x: hidden; }
+:root {
+  --teal: #00C9B1; --teal-light: #B2F0EA; --violet: #8B5CF6; --violet-light: #DDD6FE;
+  --text: #1A1A2E; --text-soft: #6B7280; --bg: #F7F4EF; --border: rgba(0,0,0,0.07);
+}
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: 60px; display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; background: rgba(247,244,239,0.94); backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-logo { font-family: 'Fraunces', serif; font-size: 1.15rem; font-weight: 900; color: var(--teal); cursor: pointer; flex-shrink: 0; }
+.nav-logo span { color: var(--violet); }
+.nav-center { display: flex; align-items: center; gap: 0.5rem; }
+.nav-home-btn { background: none; border: 1.5px solid var(--border); color: var(--text-soft); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.8rem; font-weight: 600; cursor: pointer; padding: 0.35rem 0.9rem; border-radius: 100px; transition: all 0.2s; }
+.nav-home-btn:hover, .nav-home-btn.active { background: var(--teal); border-color: var(--teal); color: white; }
+.dropdown-wrap { position: relative; }
+.dropdown-btn { display: flex; align-items: center; gap: 0.4rem; background: white; border: 1.5px solid var(--border); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.8rem; font-weight: 600; cursor: pointer; padding: 0.35rem 0.9rem; border-radius: 100px; transition: all 0.2s; white-space: nowrap; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+.dropdown-btn:hover { border-color: var(--teal); color: var(--teal); }
+.arrow { display: inline-block; transition: transform 0.2s; font-size: 0.65rem; color: var(--text-soft); }
+.dropdown-btn.open .arrow { transform: rotate(180deg); }
+.dropdown-menu { display: none; position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%); background: white; border: 1px solid var(--border); border-radius: 16px; box-shadow: 0 12px 40px rgba(0,0,0,0.12); padding: 0.75rem; min-width: 280px; max-height: 420px; overflow-y: auto; z-index: 300; }
+.dropdown-menu.open { display: block; }
+.dsec { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-soft); padding: 0.4rem 0.5rem 0.2rem; }
+.ditem { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.6rem; border-radius: 10px; cursor: pointer; transition: background 0.15s; border: none; background: none; width: 100%; text-align: left; }
+.ditem:hover { background: #F7F4EF; }
+.ditem .df { font-size: 1.2rem; flex-shrink: 0; }
+.ditem .di { flex: 1; }
+.ditem .dn { font-size: 0.82rem; font-weight: 600; color: var(--text); }
+.ditem .dd { font-size: 0.68rem; color: var(--text-soft); }
+.ditem .dnum { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--teal); background: var(--teal-light); padding: 0.1rem 0.4rem; border-radius: 100px; }
+.ditem.pend { opacity: 0.4; pointer-events: none; }
+.nav-badge { font-family: 'Space Mono', monospace; font-size: 0.72rem; color: var(--text-soft); flex-shrink: 0; }
+.nav-badge strong { color: var(--teal); }
+.dropdown-menu::-webkit-scrollbar { width: 4px; }
+.dropdown-menu::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 4px; }
+
+.page { display: none; }
+.page.active { display: block; }
+
+/* HERO */
+.hero { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 5rem 1.5rem 2rem; text-align: center; position: relative; overflow: hidden; }
+.hero-blobs { position: absolute; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
+.blob { position: absolute; border-radius: 50%; filter: blur(65px); opacity: 0.38; animation: blobFloat ease-in-out infinite alternate; }
+.blob-1 { width: 500px; height: 500px; background: #B2F0EA; top: -150px; left: -150px; animation-duration: 12s; }
+.blob-2 { width: 400px; height: 400px; background: #DDD6FE; bottom: -100px; right: -100px; animation-duration: 15s; animation-delay: 2s; }
+.blob-3 { width: 280px; height: 280px; background: #FEF3C7; top: 42%; left: 50%; transform: translate(-50%,-50%); animation-duration: 10s; animation-delay: 1s; }
+@keyframes blobFloat { from { transform: translate(0,0) scale(1); } to { transform: translate(18px,18px) scale(1.06); } }
+.hero-content { position: relative; z-index: 2; max-width: 860px; width: 100%; }
+.hero-eyebrow { display: inline-flex; align-items: center; gap: 0.4rem; background: white; border: 1.5px solid var(--teal-light); border-radius: 100px; padding: 0.35rem 1rem; font-size: 0.72rem; font-weight: 600; color: var(--teal); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 1.5rem; animation: fadeUp 0.7s ease both; box-shadow: 0 2px 8px rgba(0,201,177,0.12); }
+.hero-title { font-family: 'Fraunces', serif; font-weight: 900; line-height: 1; margin-bottom: 0.5rem; animation: fadeUp 0.7s ease 0.08s both; }
+.big-num { display: block; font-size: clamp(6rem,18vw,13rem); color: var(--teal); line-height: 0.9; }
+.big-text { display: block; font-size: clamp(2rem,6vw,4.5rem); color: var(--text); font-style: italic; margin-top: 0.2rem; }
+.big-text em { font-style: normal; color: var(--violet); }
+.hero-sub { font-size: 1rem; color: var(--text-soft); line-height: 1.7; max-width: 420px; margin: 0.75rem auto 2rem; animation: fadeUp 0.7s ease 0.16s both; }
+.hero-sub strong { color: var(--teal); font-weight: 700; }
+
+.countdown { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2rem; animation: fadeUp 0.7s ease 0.24s both; }
+.cd-block { background: white; border-radius: 14px; padding: 0.8rem 1rem; min-width: 68px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); border: 1px solid var(--border); }
+.cd-num { font-family: 'Space Mono', monospace; font-size: 1.7rem; font-weight: 700; color: var(--teal); line-height: 1; }
+.cd-label { font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-soft); margin-top: 0.2rem; }
+
+.progress-wrap { max-width: 440px; margin: 0 auto 2rem; animation: fadeUp 0.7s ease 0.32s both; }
+.progress-labels { display: flex; justify-content: space-between; font-size: 0.78rem; color: var(--text-soft); font-weight: 500; margin-bottom: 0.5rem; }
+.progress-labels strong { color: var(--teal); }
+.pbar { height: 10px; background: #E5E2DC; border-radius: 100px; overflow: hidden; }
+.pbar-fill { height: 100%; border-radius: 100px; background: linear-gradient(90deg, var(--teal), var(--violet)); width: 96.67%; animation: growBar 1.4s cubic-bezier(.4,0,.2,1) 0.5s both; }
+@keyframes growBar { from { width: 0; } to { width: 96.67%; } }
+
+.stats-row { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; margin-bottom: 2.5rem; animation: fadeUp 0.7s ease 0.4s both; }
+.stat-chip { display: flex; align-items: center; gap: 0.5rem; background: white; border: 1px solid var(--border); border-radius: 100px; padding: 0.35rem 0.9rem; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+.s-num { font-family: 'Fraunces', serif; font-size: 1.25rem; font-weight: 900; color: var(--violet); }
+.s-label { font-size: 0.73rem; color: var(--text-soft); font-weight: 500; }
+
+/* MAP */
+.map-container { background: white; border-radius: 20px; border: 1.5px solid var(--border); box-shadow: 0 4px 20px rgba(0,0,0,0.06); overflow: hidden; }
+#worldMap { width: 100%; height: 320px; }
+
+/* PASSPORT CARDS */
+.stamps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 1rem; }
+
+.pcard {
+  border-radius: 14px; overflow: hidden; cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  transition: transform 0.22s, box-shadow 0.22s;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: white;
+}
+.pcard:hover { transform: translateY(-4px) scale(1.02); box-shadow: 0 10px 28px rgba(0,0,0,0.16); }
+
+.pcard-top {
+  height: 90px; position: relative; display: flex;
+  align-items: flex-start; justify-content: space-between;
+  padding: 0.6rem 0.7rem; overflow: hidden;
+}
+.pcard-flag { font-size: 2rem; line-height: 1; filter: drop-shadow(0 1px 3px rgba(0,0,0,0.3)); }
+.pcard-num {
+  font-family: 'Space Mono', monospace; font-size: 0.58rem; font-weight: 700;
+  opacity: 0.75; letter-spacing: 0.05em;
+}
+.ink-lines { position: absolute; bottom: 0; left: 0; right: 0; pointer-events: none; }
+.pcard-bot { padding: 0.6rem 0.7rem 0.65rem; }
+.pcard-name { font-size: 0.78rem; font-weight: 700; color: #1A1A2E; line-height: 1.2; }
+.pcard-sub { font-size: 0.62rem; color: #9CA3AF; margin-top: 0.15rem; font-weight: 500; }
+
+/* Mystery card for #30 */
+.pcard-mystery { cursor: default; }
+.pcard-mystery:hover { transform: none; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+.mystery-top {
+  height: 90px; background: repeating-linear-gradient(45deg, #374151, #374151 4px, #4B5563 4px, #4B5563 8px);
+  display: flex; align-items: center; justify-content: center; position: relative;
+}
+.mystery-q {
+  font-family: 'Fraunces', serif; font-size: 3rem; font-weight: 900;
+  color: rgba(255,255,255,0.15); user-select: none;
+}
+.mystery-num {
+  position: absolute; top: 0.5rem; right: 0.6rem;
+  font-family: 'Space Mono', monospace; font-size: 0.58rem; font-weight: 700;
+  color: rgba(255,255,255,0.4);
+}
+.mystery-bot { padding: 0.6rem 0.7rem 0.65rem; }
+.mystery-bot .pcard-name { color: #9CA3AF; font-style: italic; }
+.mystery-bot .pcard-sub { color: #D1D5DB; }
+
+/* COUNTRY PAGE */
+.country-page { min-height: 100vh; padding-top: 60px; }
+.c-header { padding: 3rem 1.5rem 2.5rem; text-align: center; position: relative; overflow: hidden; }
+.c-header-bg { position: absolute; inset: 0; }
+.c-header-content { position: relative; z-index: 1; }
+.c-flag-big { font-size: 4.5rem; display: block; margin-bottom: 0.6rem; animation: popIn 0.5s cubic-bezier(.34,1.56,.64,1) both; }
+@keyframes popIn { from { transform: scale(0.4); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.c-tag { display: inline-flex; align-items: center; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); background: var(--teal-light); padding: 0.3rem 0.8rem; border-radius: 100px; margin-bottom: 0.6rem; }
+.c-big-name { font-family: 'Fraunces', serif; font-size: clamp(2.5rem,8vw,5rem); font-weight: 900; color: var(--text); line-height: 1; margin-bottom: 0.75rem; }
+.c-date-pill { display: inline-flex; align-items: center; gap: 0.4rem; background: white; border: 1.5px solid var(--border); border-radius: 100px; padding: 0.35rem 1rem; font-size: 0.78rem; font-weight: 600; color: var(--text-soft); box-shadow: 0 1px 6px rgba(0,0,0,0.06); }
+.back-btn { display: inline-flex; align-items: center; gap: 0.4rem; background: white; border: 1.5px solid var(--border); color: var(--text-soft); font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.8rem; font-weight: 600; cursor: pointer; padding: 0.5rem 1.1rem; border-radius: 100px; transition: all 0.2s; margin-bottom: 1.5rem; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+.back-btn:hover { border-color: var(--teal); color: var(--teal); }
+.c-body { max-width: 680px; margin: 0 auto; padding: 1.5rem 1.5rem 4rem; }
+.info-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(160px,1fr)); gap: 0.75rem; margin-bottom: 1.75rem; }
+.info-tile { background: white; border-radius: 14px; padding: 1.1rem; border: 1.5px solid var(--border); transition: all 0.2s; }
+.info-tile:hover { border-color: var(--teal-light); box-shadow: 0 4px 16px rgba(0,201,177,0.1); }
+.t-icon { font-size: 1.4rem; margin-bottom: 0.4rem; }
+.t-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-soft); font-weight: 700; margin-bottom: 0.2rem; }
+.t-val { font-size: 0.88rem; font-weight: 700; color: var(--text); }
+.memory-box { background: linear-gradient(135deg,#EEF2FF,#F0FDF9); border: 1.5px solid var(--violet-light); border-radius: 18px; padding: 1.75rem; margin-bottom: 1.75rem; position: relative; }
+.memory-box::before { content: '"'; position: absolute; top: -0.5rem; left: 1rem; font-family: 'Fraunces', serif; font-size: 6rem; color: var(--violet-light); line-height: 1; pointer-events: none; }
+.memory-label { font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.12em; font-weight: 700; color: var(--violet); margin-bottom: 0.6rem; }
+.memory-text { font-size: 1rem; line-height: 1.8; color: #374151; font-style: italic; position: relative; }
+.hl-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.hl-item { display: flex; align-items: center; gap: 0.75rem; background: white; border-radius: 10px; padding: 0.75rem 1rem; font-size: 0.88rem; color: #374151; border: 1.5px solid var(--border); transition: all 0.2s; }
+.hl-item:hover { border-color: var(--teal-light); color: var(--text); }
+.hl-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal); flex-shrink: 0; }
+.footer { text-align: center; padding: 1.5rem; font-size: 0.7rem; color: #9CA3AF; letter-spacing: 0.05em; border-top: 1px solid var(--border); margin-top: 2rem; }
+.section-label { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-soft); margin-bottom: 1rem; text-align: center; }
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width:600px) { nav { padding: 0 1rem; } .nav-badge { display: none; } .stamps-grid { grid-template-columns: repeat(auto-fill,minmax(110px,1fr)); gap:0.8rem; } #worldMap { height: 200px; } }
+
+/* ALBANIA CARD */
+.albania-card {
+  background: white; border-radius: 20px; border: 2px solid #FCA5A5;
+  box-shadow: 0 4px 24px rgba(192,57,43,0.1); overflow: hidden;
+  background: linear-gradient(135deg, #FFF5F5 0%, #FFFFFF 60%, #FFF0F9 100%);
+}
+.albania-top {
+  display: flex; align-items: center; gap: 1.5rem; padding: 1.75rem 2rem;
+  flex-wrap: wrap;
+}
+.albania-flag-wrap { position: relative; flex-shrink: 0; }
+.albania-flag { font-size: 4rem; display: block; filter: blur(6px); transition: filter 0.5s; }
+.albania-flag.revealed { filter: none; }
+.albania-num-badge {
+  position: absolute; bottom: -4px; right: -4px;
+  background: #C0392B; color: white; font-family: 'Space Mono', monospace;
+  font-size: 0.65rem; font-weight: 700; padding: 0.2rem 0.45rem; border-radius: 100px;
+  border: 2px solid white;
+}
+.albania-intro { flex: 1; min-width: 160px; }
+.albania-eyebrow { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #C0392B; margin-bottom: 0.3rem; }
+.albania-title { font-family: 'Fraunces', serif; font-size: 2.2rem; font-weight: 900; color: var(--text); letter-spacing: 0.15em; }
+.albania-sub { font-size: 0.85rem; color: var(--text-soft); margin-top: 0.2rem; }
+.albania-reveal-btn {
+  background: #C0392B; color: white; border: none; border-radius: 100px;
+  font-family: 'Plus Jakarta Sans', sans-serif; font-size: 0.85rem; font-weight: 700;
+  padding: 0.6rem 1.4rem; cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(192,57,43,0.3);
+}
+.albania-reveal-btn:hover { background: #922B21; transform: translateY(-1px); }
+
+.clues-grid {
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(260px,1fr));
+  gap: 0.75rem; padding: 0 2rem 1.75rem;
+}
+.clue-item {
+  display: flex; align-items: flex-start; gap: 0.75rem;
+  background: rgba(192,57,43,0.04); border: 1.5px solid rgba(192,57,43,0.12);
+  border-radius: 12px; padding: 0.9rem 1rem;
+  animation: fadeUp 0.5s ease both;
+}
+.clue-icon { font-size: 1.4rem; flex-shrink: 0; margin-top: 0.1rem; }
+.clue-text { font-size: 0.83rem; color: #374151; line-height: 1.55; }
+
+.albania-reveal {
+  border-top: 1px solid #FCA5A5; padding: 2rem;
+  background: linear-gradient(135deg, #FFF5F5, #FFF0F9);
+  animation: fadeUp 0.6s ease both;
+}
+.reveal-inner { text-align: center; }
+.albania-page-btn {
+  display: inline-block; margin-top: 1rem; background: #C0392B; color: white;
+  border: none; border-radius: 100px; font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 0.85rem; font-weight: 700; padding: 0.6rem 1.6rem; cursor: pointer;
+  transition: all 0.2s; box-shadow: 0 4px 12px rgba(192,57,43,0.3);
+}
+.albania-page-btn:hover { background: #922B21; transform: translateY(-1px); }
+
+/* ABOUT ME */
+.about-section {
+  max-width: 880px; margin: 0 auto 3rem; padding: 0 1.5rem;
+}
+.about-card {
+  background: white; border-radius: 24px; overflow: hidden;
+  border: 1.5px solid var(--border); box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+}
+.about-header {
+  background: linear-gradient(135deg, #0F1A2E 0%, #1a2a4a 50%, #0D2B3E 100%);
+  padding: 2.5rem 2.5rem 2rem; position: relative; overflow: hidden;
+}
+.about-header-blobs {
+  position: absolute; inset: 0; pointer-events: none;
+}
+.about-blob {
+  position: absolute; border-radius: 50%; filter: blur(40px); opacity: 0.3;
+}
+.about-blob-1 { width: 200px; height: 200px; background: #00C9B1; top: -60px; right: 60px; }
+.about-blob-2 { width: 150px; height: 150px; background: #8B5CF6; bottom: -40px; left: 30px; }
+.about-header-content { position: relative; z-index: 1; }
+.about-hi {
+  font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--teal); margin-bottom: 0.5rem;
+}
+.about-name {
+  font-family: 'Fraunces', serif; font-size: clamp(2.2rem, 6vw, 3.8rem); font-weight: 900;
+  color: white; line-height: 1; margin-bottom: 0.75rem;
+}
+.about-name em { font-style: normal; color: var(--teal); }
+.about-tagline {
+  font-size: 1rem; color: rgba(255,255,255,0.65); line-height: 1.6; max-width: 560px;
+}
+.about-tagline strong { color: rgba(255,255,255,0.9); font-weight: 600; }
+
+.about-body { padding: 2rem 2.5rem; }
+
+.about-quote {
+  background: linear-gradient(135deg, #EEF2FF, #F0FDF9);
+  border-left: 4px solid var(--teal); border-radius: 0 14px 14px 0;
+  padding: 1.25rem 1.5rem; margin-bottom: 2rem; position: relative;
+}
+.about-quote::before {
+  content: '"'; font-family: 'Fraunces', serif; font-size: 5rem;
+  color: var(--teal-light); position: absolute; top: -0.8rem; left: 0.8rem;
+  line-height: 1; pointer-events: none;
+}
+.about-quote p {
+  font-size: 1.05rem; font-style: italic; color: #374151; line-height: 1.75;
+  position: relative;
+}
+.about-quote p strong { color: var(--teal); font-style: normal; font-weight: 700; }
+
+.about-story { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 2rem; }
+@media (max-width: 600px) { .about-story { grid-template-columns: 1fr; } .about-header { padding: 2rem 1.5rem 1.5rem; } .about-body { padding: 1.5rem; } }
+
+.story-block {
+  background: #FAFAFA; border-radius: 14px; padding: 1.25rem;
+  border: 1.5px solid var(--border); position: relative; overflow: hidden;
+}
+.story-block::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  border-radius: 14px 14px 0 0;
+}
+.story-block.teal::after { background: linear-gradient(90deg, var(--teal), var(--teal-light)); }
+.story-block.violet::after { background: linear-gradient(90deg, var(--violet), var(--violet-light)); }
+.story-block.coral::after { background: linear-gradient(90deg, #F59E0B, #FDE68A); }
+.story-block.pink::after { background: linear-gradient(90deg, #EC4899, #FBB6CE); }
+
+.story-icon { font-size: 1.6rem; margin-bottom: 0.6rem; display: block; }
+.story-label {
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: var(--text-soft); margin-bottom: 0.4rem;
+}
+.story-text { font-size: 0.87rem; color: #374151; line-height: 1.65; }
+.story-text strong { color: var(--text); font-weight: 700; }
+
+.about-funfact {
+  background: linear-gradient(135deg, #FEF3C7, #FFF8E1);
+  border: 1.5px solid #FDE68A; border-radius: 14px; padding: 1.25rem 1.5rem;
+  display: flex; align-items: flex-start; gap: 1rem;
+}
+.ff-icon { font-size: 1.8rem; flex-shrink: 0; margin-top: 0.1rem; }
+.ff-label {
+  font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
+  color: #92400E; margin-bottom: 0.3rem;
+}
+.ff-text { font-size: 0.88rem; color: #374151; line-height: 1.65; }
+.ff-text strong { color: #92400E; font-weight: 700; }
+
+/* ABOUT DRAWER */
+.about-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.4);
+  z-index: 400; backdrop-filter: blur(4px); animation: fadeIn 0.25s ease;
+}
+.about-overlay.open { display: block; }
+
+.about-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 500;
+  width: min(520px, 100vw); background: white;
+  box-shadow: -8px 0 40px rgba(0,0,0,0.18);
+  transform: translateX(100%); transition: transform 0.35s cubic-bezier(.4,0,.2,1);
+  overflow-y: auto;
+}
+.about-drawer.open { transform: translateX(0); }
+
+.drawer-close {
+  position: sticky; top: 0; float: right; z-index: 10;
+  margin: 0.75rem 0.75rem 0 0;
+  background: rgba(255,255,255,0.9); border: 1.5px solid var(--border);
+  border-radius: 50%; width: 36px; height: 36px; font-size: 0.85rem;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1); transition: all 0.2s; color: var(--text-soft);
+  backdrop-filter: blur(4px);
+}
+.drawer-close:hover { background: var(--text); color: white; border-color: var(--text); }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="showHome()">30<span>×</span>30</div>
+  <div class="nav-center">
+    <button class="nav-home-btn active" id="homeBtn" onclick="showHome()">🏠 Inici</button>
+    <button class="nav-home-btn" id="aboutBtn" onclick="showAbout()">👋 Qui soc</button>
+    <div class="dropdown-wrap" id="dropWrap">
+      <button class="dropdown-btn" id="dropBtn" onclick="toggleDD()">🌍 Països <span class="arrow">▾</span></button>
+      <div class="dropdown-menu" id="dropMenu"></div>
+    </div>
+  </div>
+  <div class="nav-badge"><strong>29</strong> / 30</div>
+</nav>
+
+<!-- HOME -->
+<div class="page active" id="homePage">
+  <section class="hero">
+    <div class="hero-blobs">
+      <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div>
+    </div>
+    <div class="hero-content">
+      <div class="hero-eyebrow">✈ El repte de la meva vida</div>
+      <h1 class="hero-title">
+        <span class="big-num">30</span>
+        <span class="big-text">abans dels <em>30</em></span>
+      </h1>
+      <p class="hero-sub">Viatjar a <strong>30 països</strong> abans de fer 30 anys.<br>El rellotge corra. Les maletes, sempre a punt.</p>
+      <div class="countdown">
+        <div class="cd-block"><div class="cd-num" id="cd-d">–</div><div class="cd-label">dies</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-h">–</div><div class="cd-label">hores</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-m">–</div><div class="cd-label">minuts</div></div>
+        <div class="cd-block"><div class="cd-num" id="cd-s">–</div><div class="cd-label">segons</div></div>
+      </div>
+      <div class="progress-wrap">
+        <div class="progress-labels"><span>Progrés del repte</span><strong>29 / 30 països</strong></div>
+        <div class="pbar"><div class="pbar-fill"></div></div>
+      </div>
+      <div class="stats-row">
+        <div class="stat-chip"><span class="s-num">29</span><span class="s-label">visitats</span></div>
+        <div class="stat-chip"><span class="s-num">1</span><span class="s-label">pendent</span></div>
+        <div class="stat-chip"><span class="s-num">5</span><span class="s-label">continents</span></div>
+        <div class="stat-chip"><span class="s-num">9</span><span class="s-label">anys viatjant</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT ME PLACEHOLDER - now its own page -->
+  <div style="display:none">
+    <div class="about-card">
+      <div class="about-header">
+        <div class="about-header-blobs">
+          <div class="about-blob about-blob-1"></div>
+          <div class="about-blob about-blob-2"></div>
+        </div>
+        <div class="about-header-content">
+          <div class="about-hi">✦ Hola, món!</div>
+          <h2 class="about-name">Sóc la <em>Bet.</em></h2>
+          <p class="about-tagline">
+            Un cul inquiet, tal i com sempre m'han dit a casa. <strong>I és que tenien raó.</strong>
+            No paro mai quieta, i m'encanta viure la vida al màxim.
+          </p>
+        </div>
+      </div>
+      <div class="about-body">
+        <div class="about-quote">
+          <p>
+            Tot va començar amb la <strong>yaya Manolita</strong> i una bola del món enorme al menjador de casa.
+            Allà aprenia de les figures misterioses de l'Illa de Pasqua, de pobles llunyans, de formes estranyes als mapes.
+            I l'<strong>avi Gabriel</strong> em prometia que si feia un forat prou profund arribarien a <strong>Nova Zelanda</strong>
+            — que avui dia segueix sent el meu lloc somniat.
+          </p>
+        </div>
+
+        <div class="about-story">
+          <div class="story-block teal">
+            <span class="story-icon">🌱</span>
+            <div class="story-label">Els orígens</div>
+            <p class="story-text">
+              Des de ben petita, la curiositat per conèixer el món sencer. No vaig viatjar moltíssim de jove, però la llavor ja estava plantada. El món era gran i jo volia veure'l tot.
+            </p>
+          </div>
+          <div class="story-block violet">
+            <span class="story-icon">🛗</span>
+            <div class="story-label">El moment que ho va canviar tot</div>
+            <p class="story-text">
+              Al acabar la carrera, una oferta per <strong>viure a la Xina</strong>. La resposta? Al segon. Literalment, en un viatge en ascensor vaig dir que sí. I des d'aleshores, no he parat.
+            </p>
+          </div>
+          <div class="story-block coral">
+            <span class="story-icon">🗺️</span>
+            <div class="story-label">La filosofia</div>
+            <p class="story-text">
+              Aprofitar cada moment possible per conèixer un nou país. No esperar el "bon moment". El bon moment és ara. Sempre és ara.
+            </p>
+          </div>
+          <div class="story-block pink">
+            <span class="story-icon">✈️</span>
+            <div class="story-label">El repte</div>
+            <p class="story-text">
+              Quan vaig veure que tenia 24 països al damunt, el repte es va imposar sol: <strong>30 abans dels 30.</strong> Falten pocs mesos i falten molt pocs països.
+            </p>
+          </div>
+        </div>
+
+        <div class="about-funfact">
+          <span class="ff-icon">🏛️</span>
+          <div>
+            <div class="ff-label">Fun fact</div>
+            <p class="ff-text">
+              En un moment de la meva vida vaig veure un anunci de feina per entrar a l'<strong>AESA (Agència Estatal de Seguretat Aèria)</strong> i m'hi vaig apuntar. Les meves ganes de viatjar no tenen límits — ni tan sols aterrar em fa por.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div>
+
+  <div style="max-width:880px;margin:0 auto 2.5rem;padding:0 1.5rem;">
+    <div class="section-label">🗺 Mapa de ruta</div>
+    <div class="map-container"><svg id="worldMap" viewBox="0 0 1000 500" xmlns="http://www.w3.org/2000/svg"></svg></div>
+  </div>
+
+  <!-- ALBANIA NEXT DESTINATION -->
+  <div style="max-width:880px;margin:0 auto 2.5rem;padding:0 1.5rem;">
+    <div class="section-label">🎯 Proper destí · el país número 30</div>
+    <div class="albania-card">
+      <div class="albania-top">
+        <div class="albania-flag-wrap">
+          <span class="albania-flag">🇦🇱</span>
+          <div class="albania-num-badge">#30</div>
+        </div>
+        <div class="albania-intro">
+          <div class="albania-eyebrow">✦ Últim destí del repte</div>
+          <h3 class="albania-title">????</h3>
+          <p class="albania-sub">Un país europeu amagat. Pistes per endevinar-lo...</p>
+        </div>
+        <button class="albania-reveal-btn" onclick="revealAlbania()">Revelar destí 🦅</button>
+      </div>
+      <div class="clues-grid" id="cluesGrid"></div>
+      <div class="albania-reveal" id="albaniaReveal" style="display:none">
+        <div class="reveal-inner">
+          <span style="font-size:3rem">🇦🇱</span>
+          <h3 style="font-family:'Fraunces',serif;font-size:2rem;font-weight:900;color:#C0392B;margin:.3rem 0">Albania</h3>
+          <p style="color:#6B7280;font-size:0.9rem">El secret millor guardat del Mediterrani. El cercle es tanca aquí.</p>
+          <button class="albania-page-btn" onclick="showCountry('albania')">Explorar Albania →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:880px;margin:0 auto 1rem;padding:0 1.5rem;">
+    <div class="section-label">🛂 Segells del passaport · clica per explorar</div>
+    <div class="stamps-grid" id="stampsGrid"></div>
+  </div>
+  <div class="footer">✦ Fent 30 anys el 18·08·2026 · Rubí, Catalunya ✦</div>
+</div>
+
+<!-- ABOUT DRAWER -->
+<div class="about-overlay" id="aboutOverlay" onclick="closeAbout()"></div>
+<div class="about-drawer" id="aboutDrawer">
+  <button class="drawer-close" onclick="closeAbout()">✕</button>
+  <div class="about-card" style="border:none;box-shadow:none;border-radius:0;height:100%;overflow-y:auto">
+    <div class="about-header">
+      <div class="about-header-blobs">
+        <div class="about-blob about-blob-1"></div>
+        <div class="about-blob about-blob-2"></div>
+      </div>
+      <div class="about-header-content">
+        <div class="about-hi">✦ Hola, món!</div>
+        <h2 class="about-name">Sóc la <em>Bet.</em></h2>
+        <p class="about-tagline">
+          Un cul inquiet, tal i com sempre m'han dit a casa. <strong>I és que tenien raó.</strong>
+          No paro mai quieta, i m'encanta viure la vida al màxim.
+        </p>
+      </div>
+    </div>
+    <div class="about-body">
+      <div class="about-quote">
+        <p>
+          Tot va començar amb la <strong>yaya Manolita</strong> i una bola del món enorme al menjador de casa.
+          Allà aprenia de les figures misterioses de l'Illa de Pasqua, de pobles llunyans, de formes estranyes als mapes.
+          I l'<strong>avi Gabriel</strong> em prometia que si feia un forat prou profund arribarien a <strong>Nova Zelanda</strong>
+          — que avui dia segueix sent el meu lloc somniat.
+        </p>
+      </div>
+      <div class="about-story">
+        <div class="story-block teal">
+          <span class="story-icon">🌱</span>
+          <div class="story-label">Els orígens</div>
+          <p class="story-text">Des de ben petita, la curiositat per conèixer el món sencer. No vaig viatjar moltíssim de jove, però la llavor ja estava plantada. El món era gran i jo volia veure'l tot.</p>
+        </div>
+        <div class="story-block violet">
+          <span class="story-icon">🛗</span>
+          <div class="story-label">El moment que ho va canviar tot</div>
+          <p class="story-text">Al acabar la carrera, una oferta per <strong>viure a la Xina</strong>. La resposta? Al segon. Literalment, en un viatge en ascensor vaig dir que sí. I des d'aleshores, no he parat.</p>
+        </div>
+        <div class="story-block coral">
+          <span class="story-icon">🗺️</span>
+          <div class="story-label">La filosofia</div>
+          <p class="story-text">Aprofitar cada moment possible per conèixer un nou país. No esperar el "bon moment". El bon moment és ara. Sempre és ara.</p>
+        </div>
+        <div class="story-block pink">
+          <span class="story-icon">✈️</span>
+          <div class="story-label">El repte</div>
+          <p class="story-text">Quan vaig veure que tenia 24 països al damunt, el repte es va imposar sol: <strong>30 abans dels 30.</strong> Falten pocs mesos i falten molt pocs països.</p>
+        </div>
+      </div>
+      <div class="about-funfact">
+        <span class="ff-icon">🏛️</span>
+        <div>
+          <div class="ff-label">Fun fact</div>
+          <p class="ff-text">En un moment de la meva vida vaig veure un anunci de feina per entrar a l'<strong>AESA (Agència Estatal de Seguretat Aèria)</strong> i m'hi vaig apuntar. Les meves ganes de viatjar no tenen límits — ni tan sols aterrar em fa por.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- COUNTRY PAGE -->
+<div class="page" id="countryPage">
+  <div class="country-page">
+    <div class="c-header">
+      <div class="c-header-bg" id="cHeaderBg"></div>
+      <div class="c-header-content">
+        <span class="c-flag-big" id="cFlag"></span>
+        <div class="c-tag" id="cTag"></div>
+        <h2 class="c-big-name" id="cName"></h2>
+        <div class="c-date-pill" id="cDate"></div>
+      </div>
+    </div>
+    <div class="c-body">
+      <button class="back-btn" onclick="showHome()">← Tornar a l'inici</button>
+      <div class="info-grid" id="cInfoGrid"></div>
+      <div class="memory-box">
+        <div class="memory-label">✦ Memòria del viatge</div>
+        <div class="memory-text" id="cMemory"></div>
+      </div>
+      <div class="section-label" style="text-align:left;margin-top:0">Moments destacats</div>
+      <ul class="hl-list" id="cHighlights"></ul>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/3.0.2/topojson.min.js"></script>
+<script>
+
+/* ── COUNTRY DATA ── */
+const countries = [
+  { id:'cambodja', name:'Cambodja', flag:'🇰🇭', date:'Juny 2026', order:29, continent:'Àsia', isoA2:'KH',
+    icon:'🏯', stampColor:'#9333EA', stampText:'#FFFFFF',
+    info:[{icon:'🏯',l:'Icònic',v:'Angkor Wat'},{icon:'🌺',l:'Flor nacional',v:'Rumdul'},{icon:'🛺',l:'Transport',v:'Tuk-tuk pels temples'}],
+    memory:'Angkor Wat és un dels llocs més impressionants del planeta. Veure el temple emergir de la jungla a l\'alba és un d\'aquells moments que et recorden per què valores tant viatjar. Cambodja és història, espiritualitat i resiliència.',
+    highlights:['Veure l\'alba a Angkor Wat','Explorar Angkor Thom i el Bayon','Descobrir la història al Museu del Genocidi de Phnom Penh','Navegar pel llac Tonle Sap'] },
+  { id:'vatica', name:'Ciutat del Vaticà', flag:'🇻🇦', date:'Maig 2026', order:28, continent:'Europa', isoA2:'VA',
+    icon:'⛪', stampColor:'#FFD700', stampText:'#8B5E00',
+    info:[{icon:'⛪',l:'Icònic',v:'Basílica de Sant Pere'},{icon:'🎨',l:'Art',v:'Capella Sixtina'},{icon:'📜',l:'Mida',v:'Estat més petit del món'}],
+    memory:'El país més petit del món dins d\'una altra ciutat. El Vaticà és una concentració de bellesa artística i poder espiritual que no té paral·lel. La Capella Sixtina en persona és molt més gran i aclaparadora del que t\'imagines.',
+    highlights:['Admirar la Capella Sixtina de Miquel Àngel','Entrar a la Basílica de Sant Pere','Visitar els Museus Vaticans','Creuar la frontera més petita del món'] },
+  { id:'luxemburg', name:'Luxemburg', flag:'🇱🇺', date:'Abril 2026', order:27, continent:'Europa', isoA2:'LU',
+    icon:'🏰', stampColor:'#00AAFF', stampText:'#FFFFFF',
+    info:[{icon:'🏰',l:'Icònic',v:'Casemates du Bock'},{icon:'💶',l:'Curiositat',v:'Capital financera europea'},{icon:'🌲',l:'Natura',v:'Ardenes luxemburgueses'}],
+    memory:'Luxemburg és petit però sorprèn: una capital amb un nucli medieval declarat Patrimoni de la UNESCO, encastat entre penya-segats. Un dels països amb major renda per càpita del món i una qualitat de vida impressionant.',
+    highlights:['Explorar les Casemates du Bock (túnels medievals)','Passejar pel barri de Grund al peu dels espadats','Visitar el Palau Gran Ducal','Descobrir les Ardenes luxemburgueses'] },
+  { id:'irlanda', name:'Irlanda', flag:'🇮🇪', date:'Març 2026', order:26, continent:'Europa', isoA2:'IE',
+    icon:'☘️', stampColor:'#8B5CF6', stampText:'#FFFFFF',
+    info:[{icon:'🏔️',l:'Paisatge',v:'Penya-segats i verd'},{icon:'🍺',l:'Must',v:'Guinness al pub'},{icon:'☁️',l:'Temps',v:'Pluja i màgia'}],
+    memory:'El verd més verd que mai he vist. Irlanda és exactament com te la imagines però millor: cliffs que tallen la respiració, pubs càlids mentre plou, i una energia jove i vibrant a Dublín.',
+    highlights:['Passejar pels carrers medievals de Dublín','Veure els penya-segats de Moher','Gaudir d\'una Guinness en un pub tradicional','Descobrir la costa salvatge de l\'oest'] },
+  { id:'puertorico', name:'Puerto Rico', flag:'🇵🇷', date:'Gener 2026', order:25, continent:'Amèrica', isoA2:'PR',
+    icon:'🌴', stampColor:'#00C9B1', stampText:'#FFFFFF',
+    info:[{icon:'🌴',l:'Ambient',v:'Caribeany vibrante'},{icon:'🎵',l:'So',v:'Reggaeton i salsa'},{icon:'🏖️',l:'Platges',v:'Condado, Luquillo'}],
+    memory:'Colors, calor i ritme. Puerto Rico em va robar el cor des del primer moment. El Vell San Juan és com una postal viva, i la gent... increïble. Un Carib diferent i únic.',
+    highlights:['Explorar el Vell San Juan amb els seus carrers de colors','Nedar a les platges de Condado','Viure la gastronomia caribenya','Sentir el ritme de la salsa'] },
+  { id:'austria', name:'Àustria', flag:'🇦🇹', date:'Juliol 2025', order:24, continent:'Europa', isoA2:'AT',
+    icon:'🎼', stampColor:'#E74C3C', stampText:'#FFFFFF',
+    info:[{icon:'🎼',l:'Cultura',v:'Mozart i la música'},{icon:'⛰️',l:'Natura',v:'Alps austríacs'},{icon:'☕',l:'Must',v:'Cafè Vienès'}],
+    memory:'Viena és elegància pura: cafès centenaris, arquitectura imperial, i una cultura musical que impregna cada carrer. I després els Alps... la natura aquí és d\'un altre nivell.',
+    highlights:['Visitar el Palau Schönbrunn','Fer senderisme als Alps austríacs','Escoltar música clàssica a Viena','Provar l\'Apfelstrudel original'] },
+  { id:'maldives', name:'Maldives', flag:'🇲🇻', date:'Gener 2025', order:23, continent:'Àsia', isoA2:'MV',
+    icon:'🐠', stampColor:'#0891B2', stampText:'#FFFFFF',
+    info:[{icon:'🐠',l:'Mar',v:'Oceà Índic'},{icon:'🌅',l:'Millor moment',v:'Posta de sol'},{icon:'🏝️',l:'Illa',v:'Atolló paradisíac'}],
+    memory:'Maldives és el paradís que tothom s\'imagina però que en persona supera totes les expectatives. L\'oceà és d\'un turquesa tan intens que sembla de mentida. El silenci, la pau, la bellesa absoluta.',
+    highlights:['Dormir en un bungalow sobre l\'aigua','Snorkel amb tortugues marines','Veure una posta de sol perfecta','Nadar en aigües turqueses cristal·lines'] },
+  { id:'malta', name:'Malta', flag:'🇲🇹', date:'Desembre 2024', order:22, continent:'Europa', isoA2:'MT',
+    icon:'🏛️', stampColor:'#D97706', stampText:'#FFFFFF',
+    info:[{icon:'🏛️',l:'Història',v:'Temples megalítics'},{icon:'🌊',l:'Icònic',v:'Laguna Blava'},{icon:'☀️',l:'Temps',v:'Sol fins a l\'hivern'}],
+    memory:'Malta és una joia amagada del Mediterrani. Una illa petita amb una història enorme: temples megalítics, cavallers de Sant Joan, i una Valletta Patrimoni de la UNESCO.',
+    highlights:['Explorar la capital La Valletta','Visitar la Laguna Blava de Comino','Descobrir Mdina, la ciutat silenciosa','Gaudir del sol mediterrani a l\'hivern'] },
+  { id:'marroc', name:'Marroc', flag:'🇲🇦', date:'Agost 2024', order:21, continent:'Àfrica', isoA2:'MA',
+    icon:'🐪', stampColor:'#B45309', stampText:'#FFFFFF',
+    info:[{icon:'🐪',l:'Icònic',v:'Desert del Sàhara'},{icon:'🕌',l:'Cultura',v:'Medines i zoucs'},{icon:'🫖',l:'Sabor',v:'Te de menta'}],
+    memory:'Marroc és tots els sentits alhora: els colors dels zouks, l\'olor de les espècies, la música, la calor... i el desert del Sàhara. Anar al Sàhara és una experiència que canvia la perspectiva de la vida.',
+    highlights:['Perdre\'s per la medina de Marràqueix','Veure l\'alba al Sàhara','Visitar la plaça Djemaa el-Fna','Tastar el tajin i el te de menta'] },
+  { id:'xipre', name:'Xipre', flag:'🇨🇾', date:'Agost 2023', order:20, continent:'Europa', isoA2:'CY',
+    icon:'🏺', stampColor:'#2563EB', stampText:'#FFFFFF',
+    info:[{icon:'🏺',l:'Història',v:'Roca d\'Afrodita'},{icon:'🌿',l:'Gastronomia',v:'Meze tradicional'},{icon:'🌊',l:'Mar',v:'Mediterrani cristal·lí'}],
+    memory:'Xipre amaga molt més del que sembla: és el bressol d\'Afrodita, terra de creuades, i un pont entre Europa i el Llevant. Les platges, sí, però sobretot la història.',
+    highlights:['Visitar la roca d\'Afrodita','Explorar Pafos i les seves restes romanes','Banyar-se a les platges de Protaras','Provar el meze cipriota'] },
+  { id:'dominicana', name:'Rep. Dominicana', flag:'🇩🇴', date:'Juliol 2023', order:19, continent:'Amèrica', isoA2:'DO',
+    icon:'💃', stampColor:'#059669', stampText:'#FFFFFF',
+    info:[{icon:'🌴',l:'Platges',v:'Punta Cana'},{icon:'💃',l:'Ritme',v:'Merengue i bachata'},{icon:'🏛️',l:'Historia',v:'Primera col·lònia americana'}],
+    memory:'El primer Carib. L\'olor de la crema solar, el so del merengue, les palmes que ballen amb el vent... La República Dominicana és la imatge mental de "vacances" feta país.',
+    highlights:['Relaxar-se a Punta Cana','Descobrir el Zona Colonial de Santo Domingo','Nedar en cenotes naturals','Viure el carnival dominicà'] },
+  { id:'uk', name:'Regne Unit', flag:'🇬🇧', date:'Novembre 2022', order:18, continent:'Europa', isoA2:'GB',
+    icon:'🎸', stampColor:'#1D4ED8', stampText:'#FFFFFF',
+    info:[{icon:'🏙️',l:'Ciutat',v:'Birmingham'},{icon:'🍺',l:'Pub culture',v:'Ales i stouts'},{icon:'🎨',l:'Cultura',v:'Arts i música'}],
+    memory:'Birmingham, la segona ciutat de Gran Bretanya, és un lloc fascinant. Una barreja de cultura, industrialisme reconvertit i una escena culinària sorprenentment vibrant. Molt més que Londres.',
+    highlights:['Explorar Birmingham','Visitar mercats nadalencs britànics','Descobrir la cultura musical britànica','Gaudir del fish & chips'] },
+  { id:'holanda', name:'Holanda', flag:'🇳🇱', date:'Juliol 2022', order:17, continent:'Europa', isoA2:'NL',
+    icon:'🌷', stampColor:'#DC2626', stampText:'#FFFFFF',
+    info:[{icon:'🚲',l:'Transport',v:'Bicicleta obligatòria'},{icon:'🌷',l:'Icònic',v:'Camps de tulipes'},{icon:'🏛️',l:'Museus',v:'Rijksmuseum, Van Gogh'}],
+    memory:'Amsterdam és una de les ciutats més belles d\'Europa i alhora una de les més liberals i obertes. En bici pels canals, aturant-me a cada pont, descobrint el Rijksmuseum... un viatge perfecte.',
+    highlights:['Passejar en bicicleta per Amsterdam','Visitar els museus del Barri dels Museus','Veure els molins de Zaanse Schans','Explorar els canals en vaixell'] },
+  { id:'belgica', name:'Bèlgica', flag:'🇧🇪', date:'Juny 2022', order:16, continent:'Europa', isoA2:'BE',
+    icon:'🍫', stampColor:'#92400E', stampText:'#FFFFFF',
+    info:[{icon:'🍫',l:'Obsessió',v:'Xocolata belga'},{icon:'🏰',l:'Joia',v:'Bruges medieval'},{icon:'🍺',l:'Tradició',v:'Cerveses trapistes'}],
+    memory:'Bèlgica és el país de les coses bones: xocolata, gaufres, cervesa i algunes de les ciutats medievals més ben conservades d\'Europa. Bruges em va deixar sense paraules.',
+    highlights:['Menjar gaufres belgues originals','Visitar Bruges, la Venècia del Nord','Provar totes les cerveses belgues','Admirar la Grand Place de nit'] },
+  { id:'portugal', name:'Portugal', flag:'🇵🇹', date:'Novembre 2021', order:15, continent:'Europa', isoA2:'PT',
+    icon:'🎵', stampColor:'#15803D', stampText:'#FFFFFF',
+    info:[{icon:'🎵',l:'Ànima',v:'Fado de Lisboa'},{icon:'🛤️',l:'Transport',v:'Tramvia 28'},{icon:'🥐',l:'Must',v:'Pastel de Belém'}],
+    memory:'Portugal em va sorprendre. Lisboa és una de les capitals europees més autèntiques: els tramvies, el fado, la llum daurada que banya la ciutat a la tarda... Alfama és màgic.',
+    highlights:['Veure Lisboa des del Castelo de São Jorge','Escoltar Fado en directe','Menjar pastéis de Belém originals','Explorar el barri d\'Alfama'] },
+  { id:'eslovenia', name:'Eslovènia', flag:'🇸🇮', date:'Agost 2019', order:14, continent:'Europa', isoA2:'SI',
+    icon:'🏔️', stampColor:'#0369A1', stampText:'#FFFFFF',
+    info:[{icon:'🏔️',l:'Icònic',v:'Llac Bled'},{icon:'🗺️',l:'Mida',v:'País petit i perfecte'},{icon:'🌲',l:'Natura',v:'Alps i coves'}],
+    memory:'Eslovènia és el secret millor guardat d\'Europa. El llac Bled és d\'una bellesa que t\'oprime el pit: la roqueta enmig, el castell a dalt del penya-segat, i els Alps de fons. Un somni.',
+    highlights:['Navegar pel llac Bled','Visitar el castell de Bled a l\'alba','Explorar les coves de Postojna','Descobrir Ljubljana la capital petita i perfecta'] },
+  { id:'eslovaquia', name:'Eslovàquia', flag:'🇸🇰', date:'Abril 2019', order:13, continent:'Europa', isoA2:'SK',
+    icon:'🏰', stampColor:'#7C3AED', stampText:'#FFFFFF',
+    info:[{icon:'🏰',l:'Must',v:'Casc antic de Bratislava'},{icon:'🌊',l:'Natura',v:'Riu Danubi'},{icon:'🍺',l:'Preu',v:'Molt assequible'}],
+    memory:'Bratislava és una de les capitals europees més infravalades. Petita, caminable, amb un centre antic encantador i molt menys turisme que els seus veïns. Un descobriment inesperat.',
+    highlights:['Explorar el nucli antic de Bratislava','Visitar el Palau de Devin','Descobrir les ciutats medievals eslovaques','Provar la gastronomia local'] },
+  { id:'tailandia', name:'Tailàndia', flag:'🇹🇭', date:'Gener 2019', order:12, continent:'Àsia', isoA2:'TH',
+    icon:'🛕', stampColor:'#9333EA', stampText:'#FFFFFF',
+    info:[{icon:'🛕',l:'Espiritualitat',v:'Temples budistes'},{icon:'🍜',l:'Menjar',v:'Pad Thai i curri'},{icon:'🏝️',l:'Illes',v:'Koh Phi Phi, Samui'}],
+    memory:'Tailàndia és el viatge que t\'enganxa. Bangkok és el caos vibrant d\'Àsia, els temples són de somni, i el sud del país... illes perfectes, coral intacte, i un som que et segueix a casa.',
+    highlights:['Visitar el Wat Pho de Bangkok','Explorar Chiang Mai i els seus temples','Fer snorkel a les illes del sud','Menjar street food als mercats nocturns'] },
+  { id:'xina', name:'Xina', flag:'🇨🇳', date:'Octubre 2018', order:11, continent:'Àsia', isoA2:'CN',
+    icon:'🏯', stampColor:'#B91C1C', stampText:'#FFFFFF',
+    info:[{icon:'🏯',l:'Icònic',v:'Gran Muralla Xinesa'},{icon:'🥟',l:'Menjar',v:'Dim sum i hotpot'},{icon:'🌆',l:'Contrast',v:'Tradició i futur'}],
+    memory:'La Gran Muralla és una d\'aquelles coses que has vist mil fotos però que quan ets allà et deixa mut. Xina és el país del contrast absolut: mil anys d\'història al costat dels rascacels més moderns.',
+    highlights:['Caminar per la Gran Muralla Xinesa','Explorar la Ciutat Prohibida','Descobrir el contrast entre tradició i modernitat','Menjar dim sum autèntic'] },
+  { id:'polonia', name:'Polònia', flag:'🇵🇱', date:'Gener 2018', order:10, continent:'Europa', isoA2:'PL',
+    icon:'🕍', stampColor:'#BE123C', stampText:'#FFFFFF',
+    info:[{icon:'🏙️',l:'Joia',v:'Cracòvia'},{icon:'🕯️',l:'Reflexió',v:'Auschwitz'},{icon:'🥟',l:'Menjar',v:'Pierogi'}],
+    memory:'Polònia m\'ensenyà que Europa de l\'Est és molt més del que imagines. Cracòvia és preciosa, i Auschwitz és una d\'aquelles visites que has de fer almenys una vegada a la vida.',
+    highlights:['Visitar Cracòvia i el barri antic','Reflexionar a Auschwitz','Explorar la Varsòvia reconstruïda','Provar el bigos i els pierogi'] },
+  { id:'txeca', name:'Rep. Txeca', flag:'🇨🇿', date:'Agost 2017', order:9, continent:'Europa', isoA2:'CZ',
+    icon:'🌉', stampColor:'#1D4ED8', stampText:'#FFFFFF',
+    info:[{icon:'🏰',l:'Must',v:'Castell de Praga'},{icon:'🌉',l:'Icònic',v:'Pont de Carles'},{icon:'🍺',l:'Tradició',v:'Cervesa txeca'}],
+    memory:'Praga és la ciutat de les cent torres i és tot el que diuen i més. A l\'alba, quan el Pont de Carles estava quasi buit, vaig entendre per que tothom s\'enamora d\'aquesta ciutat.',
+    highlights:['Traversar el Pont de Carles a l\'alba','Admirar el Rellotge Astronòmic','Explorar el barri de Malá Strana','Pujar al Castell de Praga'] },
+  { id:'alemanya', name:'Alemanya', flag:'🇩🇪', date:'Agost 2017', order:8, continent:'Europa', isoA2:'DE',
+    icon:'🎨', stampColor:'#374151', stampText:'#FFFFFF',
+    info:[{icon:'🎨',l:'Cultura',v:'Art i creativitat'},{icon:'🏰',l:'Icònic',v:'Neuschwanstein'},{icon:'🌭',l:'Menjar',v:'Currywurst'}],
+    memory:'Alemanya combina perfectament la historia pesada del segle XX amb una modernitat i creativitat impressionants. Berlín és la capital de la cultura underground d\'Europa.',
+    highlights:['Explorar el Mur de Berlín','Descobrir la cultura d\'art de Berlín','Visitar castells de Baviera','Provar les salchichas i la cervesa'] },
+  { id:'eeuu', name:'EEUU', flag:'🇺🇸', date:'Desembre 2016', order:7, continent:'Amèrica', isoA2:'US',
+    icon:'🗽', stampColor:'#1D4ED8', stampText:'#FFFFFF',
+    info:[{icon:'🗽',l:'Icònic',v:'Nova York'},{icon:'🎄',l:'Moment',v:'Nadal a la Gran Poma'},{icon:'🌆',l:'Sensació',v:'Tot és immens'}],
+    memory:'El primer gran viatge. Nova York per Nadal és màgic d\'una manera que costa descriure: els llums, la neu, Times Square... A 17 anys, els EEUU et canvien la perspectiva del que és gran.',
+    highlights:['Sentir la magnitud de Nova York','Veure Times Square per Nadal','Explorar la Gran Poma','Viure el somni americà per primer cop'] },
+  { id:'suissa', name:'Suïssa', flag:'🇨🇭', date:'2014', order:6, continent:'Europa', isoA2:'CH',
+    icon:'⛰️', stampColor:'#DC2626', stampText:'#FFFFFF',
+    info:[{icon:'⛰️',l:'Natura',v:'Alps suïssos'},{icon:'🧀',l:'Menjar',v:'Fondue i raclette'},{icon:'⏱️',l:'Caràcter',v:'Puntualitat germànica'}],
+    memory:'Suïssa és cara però cada franc val la pena. Els Alps suïssos en ple estiu són d\'una bellesa que fa petit. Ordre, puntualitat i natura: la recepta suïssa.',
+    highlights:['Veure els Alps suïssos','Explorar Zuric i Ginebra','Provar el formatge i la fondue','Descobrir la puntualitat suïssa'] },
+  { id:'italia', name:'Itàlia', flag:'🇮🇹', date:'Institut', order:5, continent:'Europa', isoA2:'IT',
+    icon:'🍕', stampColor:'#15803D', stampText:'#FFFFFF',
+    info:[{icon:'🍕',l:'Must',v:'Pizza napolitana'},{icon:'🏛️',l:'Art',v:'Roma, Florència, Venècia'},{icon:'☀️',l:'Vida',v:'La dolce vita'}],
+    memory:'Itàlia és massa, en el millor sentit: massa bellesa, massa menjar bo, massa història per un sol viatge. Un país que t\'obliga a tornar.',
+    highlights:['Veure el Coliseu de Roma','Menjar pizza napolitana original','Explorar Florència i els seus museus','Navegar pels canals de Venècia'] },
+  { id:'monaco', name:'Mónaco', flag:'🇲🇨', date:'Institut', order:4, continent:'Europa', isoA2:'MC',
+    icon:'🎰', stampColor:'#BE123C', stampText:'#FFFFFF',
+    info:[{icon:'🎰',l:'Icònic',v:'Casino de Monte Carlo'},{icon:'🏎️',l:'F1',v:'Circuit urbà llegendari'},{icon:'💎',l:'Resum',v:'Luxe en miniatura'}],
+    memory:'El país més petit on he estat. Mònaco és el luxe concentrat en uns pocs quilòmetres quadrats: cotxes de superesport, iacths milionaris, i una vista del Mediterrani que no oblidaré.',
+    highlights:['Veure el Casino de Monte Carlo','Descobrir el país més petit del món','Admirar els iacths al port de Mònaco','Contemplar els Alps sobre el Mediterrani'] },
+  { id:'franca', name:'França', flag:'🇫🇷', date:'Visitat', order:3, continent:'Europa', isoA2:'FR',
+    icon:'🗼', stampColor:'#1D4ED8', stampText:'#FFFFFF',
+    info:[{icon:'🗼',l:'Símbol',v:'Torre Eiffel'},{icon:'🥐',l:'Esmorzar',v:'Croissant de mantequilla'},{icon:'🍷',l:'Cultura',v:'Vi i gastronomia'}],
+    memory:'França és un clàssic inesquivable. Moltes vegades de pas però sempre deixa empremta. París, la Provença, el sud... Cada visita és una descoberta nova.',
+    highlights:['Visitar la Torre Eiffel','Explorar el Louvre','Menjar croissants frescos al matí','Descobrir la Provença i el sud'] },
+  { id:'andorra', name:'Andorra', flag:'🇦🇩', date:'Visitat', order:2, continent:'Europa', isoA2:'AD',
+    icon:'⛷️', stampColor:'#0369A1', stampText:'#FFFFFF',
+    info:[{icon:'⛷️',l:'Activitat',v:'Esquí als Pirineus'},{icon:'🛍️',l:'Plus',v:'Shopping duty-free'},{icon:'🏔️',l:'Paisatge',v:'Pirineus compartits'}],
+    memory:'El veïnet dels Pirineus, molt sovint i sempre agradable. Andorra combina neu, natura i shopping duty-free d\'una manera molt pròpia i especial.',
+    highlights:['Esquiar als Pirineus andorrans','Comprar duty-free a la zona comercial','Descobrir l\'arquitectura romànica','Gaudir de la muntanya a qualsevol estació'] },
+  { id:'espanya', name:'Espanya', flag:'🇪🇸', date:'Visitat', order:1, continent:'Europa', isoA2:'ES',
+    icon:'🏠', stampColor:'#B45309', stampText:'#FFFFFF',
+    info:[{icon:'🏠',l:'Relació',v:'País de casa'},{icon:'🥘',l:'Menjar',v:'Paella i tapes'},{icon:'🌞',l:'Vida',v:'Mediterrània'}],
+    memory:'El país de casa. Aquí visc, aquí vaig créixer, aquí sempre torno. Des de Catalunya fins a Andalusia, cada regió és gairebé un país diferent i mai s\'acaba de descobrir.',
+    highlights:['Explorar els racons de Barcelona i Catalunya','Descobrir el sud de l\'Andalusia','Gaudir de la gastronomia espanyola','Viure la cultura i la nit espanyola'] },
+  { id:'albania', name:'Albania', flag:'🇦🇱', date:'', order:30, continent:'Europa', isoA2:'AL',
+    icon:'❓', stampColor:'#374151', stampText:'#FFFFFF',
+    isPending:true, isNext:true,
+    clues:[
+      {icon:'🗺️', text:'És a Europa, però molts europeus ni sabrien situar-lo al mapa.'},
+      {icon:'🏛️', text:'Té dues ciutats inscrites al Patrimoni Mundial de la UNESCO per la seva arquitectura otomana ben conservada.'},
+      {icon:'🌊', text:'Banya dos mars alhora. Navegants i comerciants el travessaven des de l\'antiguitat.'},
+      {icon:'🕰️', text:'Durant dècades va ser el país més aïllat del món. Fins i tot estava prohibit tenir vehicle privat.'},
+      {icon:'🍽️', text:'El seu plat nacional és un bescuit de pasta fillo farcit, similar al de països veïns però amb nom propi.'},
+      {icon:'💰', text:'Té una de les capitals europees amb el cost de vida més baix. El turisme hi ha explotat en els últims 5 anys.'},
+    ],
+    info:[{icon:'🦅',l:'Símbol',v:'Àguila negra bicèfala'},{icon:'🏖️',l:'Costa',v:'Mar Adriàtic i Jònic'},{icon:'🏔️',l:'Natura',v:'Alps albanesos'}],
+    memory:'El destí número 30. El final del repte. Albania és el secret millor guardat de la Mediterrània: platges verges, muntanyes imponents i una Tirana plena de vida i color. El cercle es tanca aquí.',
+    highlights:['Explorar Tirana i la seva art urbà','Visitar la Riviera albanesa','Senderisme als Alps albanesos','Descobrir Berat i Gjirokastër, ciutats Patrimoni de la UNESCO'] }
+];
+
+const visited = new Set(countries.filter(c => c.date).map(c => c.isoA2));
+const isoToId = {}; countries.forEach(c => { isoToId[c.isoA2] = c.id; });
+const sorted = [...countries].sort((a,b) => b.order - a.order);
+
+/* ── PASSPORT CARD STYLE ── */
+// Scenic color gradients per country (sky + landscape feel)
+const cardThemes = {
+  irlanda:   { top:'#1a6b3c', bot:'#4CAF82', tx:'#ffffff' },
+  puertorico:{ top:'#0077B6', bot:'#48CAE4', tx:'#ffffff' },
+  austria:   { top:'#C62828', bot:'#EF9A9A', tx:'#ffffff' },
+  maldives:  { top:'#006994', bot:'#40C4FF', tx:'#ffffff' },
+  malta:     { top:'#D84315', bot:'#FFAB91', tx:'#ffffff' },
+  marroc:    { top:'#BF360C', bot:'#E6A817', tx:'#ffffff' },
+  xipre:     { top:'#1565C0', bot:'#42A5F5', tx:'#ffffff' },
+  dominicana:{ top:'#1B5E20', bot:'#66BB6A', tx:'#ffffff' },
+  uk:        { top:'#0D47A1', bot:'#5C6BC0', tx:'#ffffff' },
+  holanda:   { top:'#B71C1C', bot:'#EF9A9A', tx:'#ffffff' },
+  belgica:   { top:'#E65100', bot:'#FFB74D', tx:'#ffffff' },
+  portugal:  { top:'#1B5E20', bot:'#AED581', tx:'#ffffff' },
+  eslovenia: { top:'#01579B', bot:'#4FC3F7', tx:'#ffffff' },
+  eslovaquia:{ top:'#4A148C', bot:'#AB47BC', tx:'#ffffff' },
+  tailandia: { top:'#4A148C', bot:'#CE93D8', tx:'#ffffff' },
+  xina:      { top:'#B71C1C', bot:'#FF8A65', tx:'#ffffff' },
+  polonia:   { top:'#880E4F', bot:'#F48FB1', tx:'#ffffff' },
+  txeca:     { top:'#0D47A1', bot:'#64B5F6', tx:'#ffffff' },
+  alemanya:  { top:'#212121', bot:'#78909C', tx:'#ffffff' },
+  eeuu:      { top:'#1A237E', bot:'#5C6BC0', tx:'#ffffff' },
+  suissa:    { top:'#B71C1C', bot:'#E57373', tx:'#ffffff' },
+  italia:    { top:'#1B5E20', bot:'#A5D6A7', tx:'#ffffff' },
+  monaco:    { top:'#880E4F', bot:'#CE93D8', tx:'#ffffff' },
+  franca:    { top:'#0D47A1', bot:'#EF9A9A', tx:'#ffffff' },
+  andorra:   { top:'#1565C0', bot:'#81C784', tx:'#ffffff' },
+  espanya:   { top:'#E65100', bot:'#FFCC02', tx:'#ffffff' },
+  luxemburg: { top:'#0288D1', bot:'#80DEEA', tx:'#ffffff' },
+  vatica:    { top:'#F9A825', bot:'#FFF176', tx:'#333' },
+  cambodja:  { top:'#6A1B9A', bot:'#CE93D8', tx:'#ffffff' },
+};
+
+function makePassportCard(c) {
+  if (!c.date) {
+    // Mystery card for Albania
+    return `
+    <div class="pcard pcard-mystery">
+      <div class="pcard-top mystery-top">
+        <span class="mystery-q">?</span>
+        <div class="pcard-num mystery-num">#30</div>
+      </div>
+      <div class="pcard-bot mystery-bot">
+        <div class="pcard-name">Pròximament</div>
+        <div class="pcard-sub">Últim destí</div>
+      </div>
+    </div>`;
+  }
+  const th = cardThemes[c.id] || { top:'#374151', bot:'#9CA3AF', tx:'#fff' };
+  const lines = makeInkLines(c.id);
+  return `
+  <div class="pcard" onclick="showCountry('${c.id}')">
+    <div class="pcard-top" style="background:linear-gradient(160deg,${th.top} 0%,${th.bot} 100%)">
+      <div class="pcard-flag">${c.flag}</div>
+      <div class="pcard-num" style="color:rgba(255,255,255,0.7)">#${c.order}</div>
+      <div class="ink-lines">${lines}</div>
+    </div>
+    <div class="pcard-bot">
+      <div class="pcard-name">${c.name}</div>
+      <div class="pcard-sub">${c.continent}</div>
+    </div>
+  </div>`;
+}
+
+function makeInkLines(seed) {
+  // Deterministic wavy lines based on country name — passport ink effect
+  let h = 0; for(let i=0;i<seed.length;i++) h = (h*31+seed.charCodeAt(i))%1000;
+  const lines = [];
+  for(let i=0;i<4;i++){
+    const y = 18 + i*12;
+    const amp = 3 + ((h + i*17)%5);
+    const phase = (h + i*13)%20;
+    lines.push(`<path d="M0,${y} Q20,${y-amp+phase%3} 40,${y} Q60,${y+amp} 80,${y} Q100,${y-amp} 120,${y}" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.2"/>`);
+  }
+  return `<svg width="120" height="60" viewBox="0 0 120 60" style="position:absolute;bottom:0;left:0;right:0">${lines.join('')}</svg>`;
+}
+
+/* ── BUILD STAMPS GRID ── */
+function buildStamps() {
+  const grid = document.getElementById('stampsGrid');
+  grid.innerHTML = sorted.map(c => makePassportCard(c)).join('');
+}
+
+/* ── DROPDOWN ── */
+function buildDropdown() {
+  const menu = document.getElementById('dropMenu');
+  const vis = sorted.filter(c=>c.date);
+  let h = `<div class="dsec">Visitats · ${vis.length}</div>`;
+  vis.forEach(c => { h += `<button class="ditem" onclick="showCountry('${c.id}');closeDD()"><span class="df">${c.flag}</span><div class="di"><div class="dn">${c.name}</div><div class="dd">${c.date}</div></div><span class="dnum">#${c.order}</span></button>`; });
+  menu.innerHTML = h;
+}
+
+/* ── MAP ── */
+async function buildMap() {
+  try {
+    const world = await d3.json('https://cdn.jsdelivr.net/npm/world-atlas@2/countries-110m.json');
+    const svg = d3.select('#worldMap');
+    const W=1000, H=500;
+    const proj = d3.geoNaturalEarth1().scale(153).translate([W/2,H/2]);
+    const path = d3.geoPath().projection(proj);
+    const feats = topojson.feature(world, world.objects.countries);
+    const numMap = {'372':'IE','630':'PR','040':'AT','462':'MV','470':'MT','504':'MA','196':'CY','214':'DO','826':'GB','528':'NL','056':'BE','620':'PT','705':'SI','703':'SK','764':'TH','156':'CN','616':'PL','203':'CZ','276':'DE','840':'US','756':'CH','380':'IT','492':'MC','250':'FR','020':'AD','724':'ES','442':'LU','336':'VA','116':'KH','008':'AL'};
+
+    svg.append('rect').attr('width',W).attr('height',H).attr('fill','#EEF6F9');
+    svg.append('path').datum(d3.geoGraticule()()).attr('d',path).attr('fill','none').attr('stroke','#C8DDE8').attr('stroke-width',0.4);
+
+    svg.selectAll('.land').data(feats.features).enter().append('path')
+      .attr('d',path)
+      .attr('fill', d => { const iso2 = numMap[String(d.id).padStart(3,'0')]; return iso2 && visited.has(iso2) ? '#00C9B1' : '#D8ECF0'; })
+      .attr('stroke','#fff').attr('stroke-width', d => { const iso2 = numMap[String(d.id).padStart(3,'0')]; return iso2 && visited.has(iso2) ? 0.8 : 0.3; })
+      .style('cursor', d => { const iso2 = numMap[String(d.id).padStart(3,'0')]; return iso2 && visited.has(iso2) ? 'pointer' : 'default'; })
+      .on('click', (_,d) => { const iso2 = numMap[String(d.id).padStart(3,'0')]; if(iso2 && isoToId[iso2]) showCountry(isoToId[iso2]); })
+      .on('mouseover', function(_,d) { const iso2 = numMap[String(d.id).padStart(3,'0')]; if(iso2 && visited.has(iso2)) d3.select(this).attr('fill','#8B5CF6'); })
+      .on('mouseout', function(_,d) { const iso2 = numMap[String(d.id).padStart(3,'0')]; if(iso2 && visited.has(iso2)) d3.select(this).attr('fill','#00C9B1'); });
+
+    svg.append('path').datum(topojson.mesh(world,world.objects.countries,(a,b)=>a!==b)).attr('d',path).attr('fill','none').attr('stroke','#fff').attr('stroke-width',0.5);
+
+    const leg = svg.append('g').attr('transform','translate(20,470)');
+    leg.append('rect').attr('width',12).attr('height',12).attr('rx',2).attr('fill','#00C9B1');
+    leg.append('text').attr('x',17).attr('y',10).attr('font-family','sans-serif').attr('font-size',10).attr('fill','#6B7280').text('Visitat · clica per explorar');
+    leg.append('rect').attr('x',160).attr('width',12).attr('height',12).attr('rx',2).attr('fill','#D8ECF0');
+    leg.append('text').attr('x',177).attr('y',10).attr('font-family','sans-serif').attr('font-size',10).attr('fill','#6B7280').text('Resta del món');
+  } catch(e) { console.error('Map error',e); }
+}
+
+/* ── NAVIGATION ── */
+const bgPals = [
+  'radial-gradient(ellipse 80% 70% at 50% 0%,#B2F0EA,#F7F4EF 70%)',
+  'radial-gradient(ellipse 80% 70% at 50% 0%,#DDD6FE,#F7F4EF 70%)',
+  'radial-gradient(ellipse 80% 70% at 50% 0%,#FFD6D6,#F7F4EF 70%)',
+  'radial-gradient(ellipse 80% 70% at 50% 0%,#FEF3C7,#F7F4EF 70%)',
+  'radial-gradient(ellipse 80% 70% at 50% 0%,#D1FAE5,#F7F4EF 70%)',
+  'radial-gradient(ellipse 80% 70% at 50% 0%,#E0F2FE,#F7F4EF 70%)',
+];
+
+function showHome() {
+  document.getElementById('homePage').classList.add('active');
+  document.getElementById('countryPage').classList.remove('active');
+  document.getElementById('homeBtn').classList.add('active');
+  document.getElementById('aboutBtn').classList.remove('active');
+  closeDD(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function showAbout() {
+  document.getElementById('aboutDrawer').classList.add('open');
+  document.getElementById('aboutOverlay').classList.add('open');
+  document.getElementById('aboutBtn').classList.add('active');
+  closeDD();
+}
+
+function closeAbout() {
+  document.getElementById('aboutDrawer').classList.remove('open');
+  document.getElementById('aboutOverlay').classList.remove('open');
+  document.getElementById('aboutBtn').classList.remove('active');
+}
+
+function showCountry(id) {
+  const c = countries.find(x=>x.id===id); if(!c) return;
+  document.getElementById('homePage').classList.remove('active');
+  document.getElementById('aboutPage').classList.remove('active');
+  document.getElementById('countryPage').classList.add('active');
+  document.getElementById('homeBtn').classList.remove('active');
+  document.getElementById('aboutBtn').classList.remove('active');
+  document.getElementById('cFlag').textContent = c.flag;
+  document.getElementById('cTag').textContent = `#${c.order} · ${c.continent}`;
+  document.getElementById('cName').textContent = c.name;
+  document.getElementById('cDate').textContent = `📅 ${c.date}`;
+  document.getElementById('cMemory').textContent = c.memory;
+  document.getElementById('cHeaderBg').style.background = bgPals[c.order % bgPals.length];
+  document.getElementById('cInfoGrid').innerHTML = c.info.map(i=>`<div class="info-tile"><div class="t-icon">${i.icon}</div><div class="t-label">${i.l}</div><div class="t-val">${i.v}</div></div>`).join('');
+  document.getElementById('cHighlights').innerHTML = c.highlights.map(h=>`<li class="hl-item"><span class="hl-dot"></span><span>${h}</span></li>`).join('');
+  closeDD(); window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function toggleDD() {
+  document.getElementById('dropBtn').classList.toggle('open');
+  document.getElementById('dropMenu').classList.toggle('open');
+}
+function closeDD() {
+  document.getElementById('dropBtn').classList.remove('open');
+  document.getElementById('dropMenu').classList.remove('open');
+}
+document.addEventListener('click', e => { if(!document.getElementById('dropWrap').contains(e.target)) closeDD(); });
+
+/* ── COUNTDOWN ── */
+function tick() {
+  const diff = new Date('2026-08-18T00:00:00') - new Date();
+  if(diff<=0){document.getElementById('cd-d').textContent='🎂';return;}
+  document.getElementById('cd-d').textContent=String(Math.floor(diff/86400000)).padStart(3,'0');
+  document.getElementById('cd-h').textContent=String(Math.floor((diff%86400000)/3600000)).padStart(2,'0');
+  document.getElementById('cd-m').textContent=String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+  document.getElementById('cd-s').textContent=String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+}
+
+/* ── ALBANIA CLUES ── */
+function buildAlbaniaClues() {
+  const albania = countries.find(c => c.id === 'albania');
+  if (!albania || !albania.clues) return;
+  const grid = document.getElementById('cluesGrid');
+  grid.innerHTML = albania.clues.map((cl, i) =>
+    `<div class="clue-item" style="animation-delay:${i*0.07}s">
+      <span class="clue-icon">${cl.icon}</span>
+      <span class="clue-text">${cl.text}</span>
+    </div>`
+  ).join('');
+}
+
+function revealAlbania() {
+  document.querySelector('.albania-flag').classList.add('revealed');
+  document.querySelector('.albania-title').textContent = 'Albania 🇦🇱';
+  document.getElementById('albaniaReveal').style.display = 'block';
+  document.querySelector('.albania-reveal-btn').style.display = 'none';
+  document.querySelector('.albania-sub').textContent = 'El secret millor guardat del Mediterrani.';
+  window.setTimeout(() => document.getElementById('albaniaReveal').scrollIntoView({behavior:'smooth', block:'nearest'}), 100);
+}
+
+buildDropdown(); buildStamps(); buildAlbaniaClues(); buildMap(); tick(); setInterval(tick,1000);
+</script>
+</body>
+</html>
